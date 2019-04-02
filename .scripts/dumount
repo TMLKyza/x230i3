@@ -1,0 +1,7 @@
+#!/bin/sh
+BLKLIST=sda
+DISK=$(lsblk -r --output name,mountpoint |grep -v $BLKLIST|grep '/' |dmenu -b -p "umount:" |cut -f 2 -d ' ')
+sudo umount $DISK
+if [ "$DISK" != "/mnt"  ]; then 
+	sudo rm -r $DISK;
+fi

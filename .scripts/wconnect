@@ -1,0 +1,8 @@
+#!/bin/sh
+conn=$(sudo netctl list|dmenu -b -p "Select profile:")
+if [ $conn ]
+then
+echo "start:"$conn":end"
+sudo netctl stop-all
+sudo netctl start $conn
+fi

@@ -1,0 +1,12 @@
+#!/bin/sh
+i3confpath=$HOME/.config/i3/config
+confpath=$HOME/.scripts/.config/wallps.conf
+wallps=$(cat $confpath)
+j=1;
+for i in $wallps;
+do
+cmd="sed -i 's|ws"$j";.*|ws"$j";exec wal -e -i Pictures/"$i"|g' "$i3confpath
+echo $cmd
+eval $cmd
+j=$(($j+1))
+done

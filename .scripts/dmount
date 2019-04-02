@@ -1,0 +1,11 @@
+#!/bin/sh
+BKLIST=sda
+DISK=/dev/$(lsblk -r --output name,mountpoint,type | grep  sd |grep  'part' | grep -v $BKLIST |grep -v '/'|cut -f 1,2 -d ' ' | dmenu -b -p "mount:")
+if [ "$DISK" != "/dev/" ];then
+	LOC=$(echo ' ' |dmenu -b -p "mount point(Default /mnt)")
+	if [ "$LOC" == " " ];then
+		LOC=/mnt/$(echo $DISK|cut -f3 -d'/');
+	fi
+	sudo mkdir -p $LOC
+	sudo mount $DISK $LOC;
+fi

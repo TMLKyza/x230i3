@@ -1,0 +1,15 @@
+#!/bin/sh
+BKLIST=sda
+while inotifywait -e create /dev/ --include sd[a-z][1-9];
+do
+	DISK=/dev/$(lsblk -r --output name,mountpoint,type | grep  sd |grep  'part' | grep -v $BKLIST |grep -v '/'|cut -f 1,2 -d ' ' | dmenu -b -p "mount:")
+	if [ "$DISK" != "/dev/" ];then
+		LOC=$(echo ' ' |dmenu -b -p "mount point(Default /mnt)")
+		if [ "$LOC" == " " ];then
+			LOC=/mnt;
+		else
+			sudo mkdir -p $LOC
+		fi
+		sudo mount $DISK $LOC;
+	fi
+done

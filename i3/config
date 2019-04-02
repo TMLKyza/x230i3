@@ -1,0 +1,110 @@
+#20190219 .conf/i3/conf
+
+# ---settings---
+set $mod Mod4
+floating_modifier $mod
+font pango:osx4\ Terminus 9px
+gaps inner 15
+default_border pixel 3
+
+# ---workspaces---
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# ---binds---
+# launcher
+bindsym $mod+F6 exec scrot -d 3 -e 'mv $f ~/Pictures/'
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+e exec i3-sensible-terminal -e ranger
+bindsym $mod+w exec firefox
+bindsym $mod+d exec dmenu_run -b
+bindsym $mod+Shift+d exec ./.scripts/dmount
+bindsym $mod+Control+d exec ./.scripts/dumount
+#laptop keybindings
+bindsym XF86Launch1 exec .scripts/wconnect
+bindsym XF86AudioMute exec .scripts/audiomanager Master
+bindsym XF86AudioRaiseVolume exec .scripts/audiomanager Master 5
+bindsym XF86AudioLowerVolume exec .scripts/audiomanager Master -5
+bindsym XF86MonBrightnessUp exec light -A 5 # increase screen brightness
+bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
+# kill focused window
+bindsym $mod+q kill
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+# move windows
+bindsym $mod+Control+Left move left 20 px
+bindsym $mod+Control+Down move down 20 px
+bindsym $mod+Control+Up move up 20 px
+bindsym $mod+Control+Right move right 20 px
+# split in horizontal vertically and full screen
+bindsym $mod+h split h
+bindsym $mod+v split v
+bindsym $mod+t split t
+bindsym $mod+f fullscreen toggle
+# switch to workspace
+bindsym $mod+Tab  workspace back_and_forth
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+# floating windows
+bindsym $mod+Shift+f floating toggle
+# window resize
+bindsym $mod+Shift+Left resize shrink width 5 px or 5 ppt
+bindsym $mod+Shift+Down resize grow height 5 px or 5 ppt
+bindsym $mod+Shift+Up resize shrink height 5 px or 5 ppt
+bindsym $mod+Shift+Right resize grow width 5 px or 5 ppt
+# i3restart reload and quit
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+x exec ./.scripts/sessionmanager
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This w    ill end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# ---autoexec---
+exec light -I
+exec_always echo 100 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trakpoint sensitivity
+exec_always amixer sset Master mute
+exec wal -R
+exec_always ./.scripts/automount
+exec compton --no-dock-shadow
+exec polybar -r stdbar
+#exec sudo ./.scripts/kbdbacklight -b 1.5 
+
+bar {
+  i3bar_command i3bar -t
+  position            top
+  tray_output         none  
+  workspace_buttons   no   
+  height              25  
+  colors {
+    background #00000000
+  }
+}

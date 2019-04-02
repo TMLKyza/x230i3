@@ -1,0 +1,16 @@
+#!/bin/sh
+if [ $# -eq 1 ]
+	then
+		if [ -z $(amixer sget $1 | grep 'off') ]
+			then
+				amixer sset $1 mute		
+			else
+				amixer sset $1 unmute
+			fi
+	fi
+if [ $# -eq 2 ]
+then
+	vol=$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }'|rev|cut -c2-|rev)
+	newvol=$(($vol+$2))
+	amixer sset $1 $newvol%
+fi

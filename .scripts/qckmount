@@ -1,0 +1,71 @@
+#!/bin/sh
+filemount=$HOME/.scripts/.config/qckmount.conf
+
+if [ -p /dev/stdin ];
+then
+	sel=$(cat)
+else
+	sel=$1
+fi
+
+if [ "$1" == "-u" ] || [ "$1" == "--umount" ];
+then
+	setuname="yes"
+	if [ ! -p /dev/stdin ];
+	then
+		sel=$2
+	fi
+fi
+
+if [ "$1" == "--help" ] || [ "$1" == "-h" ];
+then
+	echo "usage: "$0" [options] [recordname]"
+	echo "options:"
+	echo -e "\t-ln --list-names\treturn only names"
+	echo -e "\t-l --list\t return all mounts in table"
+	echo -e "\t-u --umount\t unmounts and delete the directory"
+	echo -e "\t-h --help\t this message"
+	exit 1
+fi
+
+if [ "$1" == "--list-names" ] || [ "$1" == "-ln" ];
+then
+	for i in $(cat $filemount | sed 's/\t/|/g' | grep -v '#' | cut -f1 -d'|')
+	do
+		echo $i
+	done
+	exit 1
+fi
+
+if [ "$1" == "--list" ] || [ "$1" == "-l" ];
+then
+	cat $filemount | column -t	
+	exit 1
+fi
+
+name=$(cat $filemount | sed 's/\t/|/g' | grep $sel | cut -f1 -d'|')
+if [ $name ];
+then
+	fstype=$(cat $filemount | sed 's/\t/|/g' | grep $sel | cut -f2 -d'|')
+	mnt=$(cat $filemount | sed 's/\t/|/g' | grep $sel | cut -f3 -d'|')
+	dev=$(cat $filemount | sed 's/\t/|/g' | grep $sel | cut -f4 -d'|')
+	opts=$(cat $filemount | sed 's/\t/|/g' | grep $sel | cut -f5 -d'|')
+
+	if [ $setuname  ];
+	then
+		cmd="sudo umount "$mnt" & rm -r "$mnt
+	else
+		if [ "$opts" != "-" ];
+		then
+			opts="-o "$opts
+		else
+			opts=" "
+		fi
+		cmd="sudo mount -t "$fstype" "$dev" "$mnt" "$opts
+	fi
+	eval $cmd
+	exit 1
+else
+	echo $sel" not found!"
+	exit 1
+fi

@@ -1,0 +1,23 @@
+#!/bin/sh
+dots_loc=$DOTS_LOC
+cdcmd="cd "$dots_loc
+eval $cdcmd
+depends=$(cat script.conf | grep -v "#" | grep £ | cut -f2 -d':')
+files=$(cat script.conf | grep -v "#" | grep ">")
+
+for i in $files;
+do
+        source=$(echo $i |cut -f1 -d'>')
+        dest=$(echo $i|cut -f2 -d'>')
+        cpcmd="sudo rsync -rgoah "$dest"/"$source" ."
+        echo $cpcmd
+        eval $cpcmd
+done
+if [ $# -eq 3 ]; then
+	git add .
+	git commit -m $1
+	git push -u $2 $3;
+else
+	echo "resouces ghatered! for automatic commit and push:"
+	echo "gitpush [commit msg] [repository] [branch]"
+fi

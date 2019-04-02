@@ -1,0 +1,6 @@
+#screenres xVal yVal Output
+MODE=$(cvt $1 $2 | grep Modeline | cut -c10-)
+NAME=$(echo ${MODE}|cut -f1 -d ' ')
+xrandr --newmode ${MODE}
+xrandr --addmode ${3} ${NAME}
+xrandr --output ${3} --mode ${NAME}

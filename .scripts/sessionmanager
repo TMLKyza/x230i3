@@ -1,0 +1,4 @@
+#!/bin/sh
+OPT=$(printf "shutdown\nreboot" | dmenu -b)
+light -O
+sudo $OPT now
