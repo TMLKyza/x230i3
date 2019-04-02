@@ -1,6 +1,6 @@
 [bar/stdbar]
 top = true
-monitor = LVDS-1 
+monitor = Virtual-1 
 width = 100%:-28
 height = 25
 offset-y=5
@@ -39,7 +39,9 @@ font-4 = FontAwesome:size=11;0
 
 modules-left = i3 
 modules-center = 
-modules-right = cpu temperature memory  filesystem alsa battery date time
+
+modules-right = cpu  memory  filesystem  date time
+
 ;volume wireless-network consumation battery 
 
 ;tray-position = right 

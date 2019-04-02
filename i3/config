@@ -3,7 +3,7 @@
 # ---settings---
 set $mod Mod4
 floating_modifier $mod
-font pango:osx4\ Terminus 9px
+font pango:DejaVu Sans Mono 8
 gaps inner 15
 default_border pixel 3
 
@@ -28,13 +28,6 @@ bindsym $mod+w exec firefox
 bindsym $mod+d exec dmenu_run -b
 bindsym $mod+Shift+d exec ./.scripts/dmount
 bindsym $mod+Control+d exec ./.scripts/dumount
-#laptop keybindings
-bindsym XF86Launch1 exec .scripts/wconnect
-bindsym XF86AudioMute exec .scripts/audiomanager Master
-bindsym XF86AudioRaiseVolume exec .scripts/audiomanager Master 5
-bindsym XF86AudioLowerVolume exec .scripts/audiomanager Master -5
-bindsym XF86MonBrightnessUp exec light -A 5 # increase screen brightness
-bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
 # kill focused window
 bindsym $mod+q kill
 # change focus
@@ -89,14 +82,11 @@ bindsym $mod+Shift+x exec ./.scripts/sessionmanager
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This w    ill end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # ---autoexec---
-exec light -I
-exec_always echo 100 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trakpoint sensitivity
-exec_always amixer sset Master mute
+exec_always ./.scripts/screenres 2560 1080 Virtual-1
 exec wal -R
 exec_always ./.scripts/automount
 exec compton --no-dock-shadow
 exec polybar -r stdbar
-#exec sudo ./.scripts/kbdbacklight -b 1.5 
 
 bar {
   i3bar_command i3bar -t
