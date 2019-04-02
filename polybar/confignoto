@@ -1,10 +1,10 @@
 [bar/stdbar]
 top = true
 monitor = LVDS-1 
-width = 100%:-28
+width = 100%:-10
 height = 25
 offset-y=5
-offset-x=15
+offset-x=5
 radius=2
 override-redirect=true
 wm-restack=i3
@@ -15,9 +15,9 @@ foreground = #eee
 line-size = 1
 
 padding-left = 0
-padding-right = 1
-module-margin-left = 1
-module-margin-right = 1
+padding-right = 3
+module-margin-left = 3
+module-margin-right = 3
 
 
 separator = |
@@ -30,16 +30,16 @@ separator = |
 ;font-2 = Misc\ Termsynu:size=10;-2
 ;font-3 = FontAwesome:size=9;0
 
-font-2 = NotoSans-Regular:size=9;0
+font-0 = NotoSans-Regular:size=9;0
 font-1 = Material\ Icons:size=11;2
-font-0 = xos4\ Terminus:size=9;0
+font-2 = xos4\ Terminus:size=14;0
 font-3 = Siji:pixelsize=11;1
 font-4 = FontAwesome:size=11;0
 
 
 modules-left = i3 
 modules-center = 
-modules-right = cpu temperature memory  filesystem alsa battery date time
+modules-right = cpu temperature memory alsa filesystem battery date time
 ;volume wireless-network consumation battery 
 
 ;tray-position = right 
@@ -90,14 +90,13 @@ interval = 2
 type = internal/battery
 full-at = 98
 
-format-charging = ⚡ <label-charging>
-format-discharging = <label-discharging>
-format-full = <label-full>
+format-charging = <animation-charging> <label-charging>
+format-discharging = <ramp-capacity> <label-discharging>
+format-full = <ramp-capacity> <label-full>
 
 time-format= %H:%M
 label-charging = %percentage%% 
 label-discharging = %percentage%% %time%h 
-label-full=BATTERY FULL
 ramp-capacity-0 = 
 ramp-capacity-0-foreground = #f53c3c
 ramp-capacity-1 = 
@@ -314,7 +313,6 @@ master-mixer = Master
 interval = 5
 format-volume=VOL: <label-volume>
 label-volume=%percentage%%
-label-muted=MUTED
 [module/filesystem]
 type = internal/fs
 interval = 25
@@ -369,14 +367,14 @@ date = %%{F#999}%Y-%m-%d%%{F-}  %%{F#fff}%H:%M%%{F-}
 
 [module/temperature]
 type = internal/temperature
-thermal-zone = 1
+thermal-zone = 5
 warn-temperature = 65
 
 format = <label>
 ;format-underline = #f50a4d
 ;format-warn-underline = ${self.format-underline}
 
-label = TEMP:%temperature%
+label = %temperature%
 label-warn-foreground = #f00
 
 ramp-0 = 
@@ -430,7 +428,7 @@ label-focused =  %index%
 label-focused-foreground = #ffffff
 label-focused-background = #3f3f3f
 label-focused-underline = #fba922
-label-focused-padding = 2
+label-focused-padding = 4
 
 ; Available tokens:
 ;   %name%
@@ -439,7 +437,7 @@ label-focused-padding = 2
 ;   %output%
 ; Default: %icon%  %name%
 label-unfocused = %index%
-label-unfocused-padding = 2
+label-unfocused-padding = 4
 
 ; Available tokens:
 ;   %name%
