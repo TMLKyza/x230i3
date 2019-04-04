@@ -42,14 +42,22 @@ bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 # move windows
 bindsym $mod+Control+Left move left 20 px
 bindsym $mod+Control+Down move down 20 px
 bindsym $mod+Control+Up move up 20 px
 bindsym $mod+Control+Right move right 20 px
+bindsym $mod+Control+h move left 20 px
+bindsym $mod+Control+j move down 20 px
+bindsym $mod+Control+k move up 20 px
+bindsym $mod+Control+l move right 20 px
 # split in horizontal vertically and full screen
-bindsym $mod+h split h
-bindsym $mod+v split v
+#bindsym $mod+h split h
+#bindsym $mod+v split v
 bindsym $mod+t split t
 bindsym $mod+f fullscreen toggle
 # switch to workspace
@@ -82,6 +90,10 @@ bindsym $mod+Shift+Left resize shrink width 5 px or 5 ppt
 bindsym $mod+Shift+Down resize grow height 5 px or 5 ppt
 bindsym $mod+Shift+Up resize shrink height 5 px or 5 ppt
 bindsym $mod+Shift+Right resize grow width 5 px or 5 ppt
+bindsym $mod+Shift+h resize shrink width 5 px or 5 ppt
+bindsym $mod+Shift+j resize grow height 5 px or 5 ppt
+bindsym $mod+Shift+k resize shrink height 5 px or 5 ppt
+bindsym $mod+Shift+l resize grow width 5 px or 5 ppt
 # i3restart reload and quit
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
@@ -96,6 +108,7 @@ exec wal -R
 exec_always ./.scripts/automount
 exec compton --no-dock-shadow
 exec polybar -r stdbar
+exec_always sudo -u root echo 2 > /proc/acpi/ibm/kbdlight
 #exec sudo ./.scripts/kbdbacklight -b 1.5 
 
 bar {

@@ -1,0 +1,12 @@
+#!/bin/sh
+echo "\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textgreek}
+\author{<--->}
+\title{<--->}
+\date{}
+\begin{document}
+\maketitle
+<--->
+\end{document}" > $1.tex
