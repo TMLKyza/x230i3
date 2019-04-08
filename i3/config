@@ -102,13 +102,14 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # ---autoexec---
 exec light -I
-exec_always echo 100 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trakpoint sensitivity
+exec_always echo 55 | sudo tee /sys/devices/platform/i8042/serio1/serio2/speed #sets trackpoint speed
+exec_always echo 90 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
 exec_always amixer sset Master mute
 exec wal -R
 exec_always ./.scripts/automount
 exec compton --no-dock-shadow
 exec polybar -r stdbar
-exec_always sudo -u root echo 2 > /proc/acpi/ibm/kbdlight
+exec_always sudo bash -c "echo 2 > /proc/acpi/ibm/kbdlight"
 #exec sudo ./.scripts/kbdbacklight -b 1.5 
 
 bar {
