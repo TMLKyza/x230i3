@@ -11,7 +11,10 @@ print_help () {
 }
 create_syncr () {
 	files=$1
-	sync_to=$2
+	case $2 in
+	  /*) sync_to=$2;;
+	  *) sync_to=$pwd/$2;;
+	esac
 	echo "sync_to="$sync_to>$syncr_conf
 	for i in $files;
 	do
