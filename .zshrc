@@ -17,10 +17,11 @@ source ~/.cache/wal/colors-tty.sh
 
 export DOTS_LOC=/home/phi/dots
 export PATH=$PATH:$HOME/.scripts:$HOME/.grapher
-alias ls='ls --color=auto'
+alias ls='lsd --color=auto'
 alias buildconf='vim '$DOTS_LOC'/script.conf'
-alias la='ls --color=auto -la'
+alias la='lsd --color=auto -la'
 alias vimrc='vim ~/.vimrc'
+alias rangerrc='vim ~/.config/ranger/rc.conf'
 alias zshrc='vim ~/.zshrc'
 alias i3conf='vim ~/.config/i3/config'
 source ~/.config/powerlevel10k/powerlevel10k.zsh-theme

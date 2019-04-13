@@ -2,6 +2,7 @@
 
 # ---settings---
 set $mod Mod4
+set $homewifi home
 floating_modifier $mod
 font pango:osx4\ Terminus 9px
 gaps inner 15
@@ -18,9 +19,9 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
-
 # ---binds---
 # launcher
+bindsym $mod+y exec i3-sensible-terminal -e mpsyt
 bindsym $mod+F6 exec scrot -d 3 -e 'mv $f ~/Pictures/'
 bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+e exec i3-sensible-terminal -e ranger
@@ -101,16 +102,18 @@ bindsym $mod+Shift+x exec ./.scripts/sessionmanager
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This w    ill end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # ---autoexec---
-exec light -I
-exec_always echo 55 | sudo tee /sys/devices/platform/i8042/serio1/serio2/speed #sets trackpoint speed
-exec_always echo 90 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
-exec_always amixer sset Master mute
 exec wal -R
 exec_always ./.scripts/automount
 exec compton --no-dock-shadow
 exec polybar -r stdbar
+exec light -I
+exec_always echo 80 | sudo tee /sys/devices/platform/i8042/serio1/serio2/speed #sets trackpoint speed
+exec_always echo 120 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
+exec amixer sset Master mute
 exec_always sudo bash -c "echo 2 > /proc/acpi/ibm/kbdlight"
 #exec sudo ./.scripts/kbdbacklight -b 1.5 
+#network features, starting last so it has no delay during boot
+exec sudo netctl start $homewifi #having this should disable dhcpd from slowing down kernel booting
 
 bar {
   i3bar_command i3bar -t

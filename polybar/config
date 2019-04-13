@@ -377,7 +377,6 @@ format = <label>
 ;format-warn-underline = ${self.format-underline}
 
 label = TEMP:%temperature%
-label-warn-foreground = #f00
 
 ramp-0 = 
 ramp-1 = 

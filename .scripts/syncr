@@ -1,0 +1,134 @@
+#!/bin/sh
+syncr_conf=.syncr
+pwd=$(pwd)
+print_help () {
+	printf "USAGE:\n"
+	printf "help\n"
+	printf "sync\n"
+	printf "new [list of files to sync] [path of sync]\n"
+	printf "copy [path to sync from]\n"
+	printf "add [file or list of files]\n"
+}
+create_syncr () {
+	files=$1
+	sync_to=$2
+	echo "sync_to="$sync_to>$syncr_conf
+	for i in $files;
+	do
+		echo "sync_file="$i>>$syncr_conf
+	done
+}
+add_files () {
+	files=$1
+	for i in $files;
+	do
+		if [ -z "$(cat $syncr_conf|grep $i)" ];
+		then
+			echo "sync_file="$i>>$syncr_conf
+			echo "adding "$i
+		else
+			echo $i" already in"
+		fi
+	done
+}
+list_changes(){
+	files=$1
+	sync_to=$2
+	output="name local remote\n"
+	for i in $files;
+	do
+		output=$output$i" "$(stat -c "%y" $i)" "$(stat -c "%y" $sync_to"/"$i)"\n"
+	done
+	echo -e $output|column -t
+}
+
+if [ "$1" == "help" ];
+then
+	print_help
+fi
+
+if [ "$1" == "new" ];
+then		
+	#check inputs
+	files=$(ls $2| grep -v $syncr_conf)
+	if [ -n "$3" ];
+	then
+		sync_to=$3
+		create_syncr "$files" $sync_to
+	else
+		print_help
+	fi
+
+fi
+
+if [ "$1" == "copy" ];
+then
+	#check input
+	if [ -z "$2" ];
+	then
+		print_help
+	else
+		copy_from=$2
+	fi
+	
+	#copy data
+	rsync -ah --progress $copy_from .
+
+	#create syncr file
+	dir=$(echo $copy_from|rev|cut -f1 -d'/'|rev)
+	cd $dir
+	create_syncr "$(ls|grep -v $syncr_conf)" $copy_from
+fi
+
+if [ "$1" == "add" ];
+then
+	if [ -z "$2" ];
+	then
+		print_help
+	else
+		if [ ! -f $syncr_conf ];
+		then
+			echo "Create a new syncr first!"
+		else
+			files=$(ls $2|grep -v $syncr_conf)
+			add_files "$files"
+		fi
+	fi
+fi
+
+if [ "$1" == "list" ];
+then
+	if [ -f $syncr_conf ];
+	then
+		sync_to=$(cat $syncr_conf|grep 'sync_to'|cut -f2 -d'=')
+		files=$(cat $syncr_conf|grep 'sync_file'|cut -f2 -d'=')
+	else
+	echo "no syncr here!"
+	fi
+	list_changes "$files" $sync_to
+fi
+
+if [ "$1" == "sync" ];
+then
+	if [ -f $syncr_conf ];
+	then
+		sync_to=$(cat $syncr_conf|grep 'sync_to'|cut -f2 -d'=')
+		files=$(cat $syncr_conf|grep 'sync_file'|cut -f2 -d'=')
+		for i in $files;
+		do
+		if [ -f $sync_to/$i ];
+		then
+			if [ $i -nt $sync_to/$i ];
+			then
+				rsync -ah --progress $i $sync_to
+			else
+				rsync -ah --progress $sync_to/$i $i
+			fi
+		else
+			rsync -ah --progress $i $sync_to
+		fi
+		done
+	else
+	echo "no syncr here!"
+	fi
+fi
