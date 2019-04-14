@@ -1,10 +1,15 @@
 #!/bin/sh
 syncr_conf=.syncr
+syncr_hysto=.hyst
 pwd=$(pwd)
 print_help () {
 	printf "USAGE:\n"
 	printf "help\n"
 	printf "sync\n"
+	printf "list\n"
+	printf "backup [description]\n"
+	printf "list-backup\n"
+	printf "rollback [backup name]\n"
 	printf "remove [file or list of files]\n"
 	printf "new [list of files to sync] [path of sync]\n"
 	printf "copy [path to sync from]\n"
@@ -36,7 +41,7 @@ add_files () {
 		then
 			echo "Create a new syncr first!"
 		else
-			files=$(ls $1|grep -v $syncr_conf)
+			files=$(ls $1|grep -v .*)
 			for i in $files;
 			do
 				if [ -z "$(cat $syncr_conf|grep $i)" ];
@@ -82,7 +87,7 @@ copy_from(){
 	#create syncr file
 	dir=$(echo $copy_from|rev|cut -f1 -d'/'|rev)
 	cd $dir
-	create_syncr "$(ls|grep -v $syncr_conf)" $copy_from
+	create_syncr "$(ls|grep -v .*)" $copy_from
 }
 sync_dirs(){
 	if [ -f $syncr_conf ];
@@ -112,7 +117,7 @@ sync_dirs(){
 	fi
 }
 remove_file(){
-	files=$(ls $1| grep -v $syncr_conf)
+	files=$(ls $1| grep -v .*)
 	for i in $files;
 	do
 		cmd="sed '/"$1"/d' -i "$syncr_conf
@@ -120,9 +125,74 @@ remove_file(){
 
 	done
 }
+create_backup(){
+	if [ -n "$1" ];
+	then
+		desc=$1
+		sync_to=$(cat $syncr_conf | grep 'sync_to=' | cut -f2 -d'=')
+		bckp_name=.bckp_$(date +%d-%m-%y@%H-%M-%S)
+		echo $bckp_name"|"$desc >> $syncr_hysto
+		cd $sync_to
+		tar -cf $bckp_name *
+	else
+		print_help
+	fi
+}
+list_backup(){
+	if [ -f $syncr_hysto ];
+	then
+		msg="name|description\n"
+		for i in $(cat $syncr_hysto);
+		do
+			msg=$msg$i"\n"
+		done
+		echo -e $msg|column -t -s'|'
+	else
+		echo "no backup file!"
+	fi
+}
+rollback(){
+	if [ -n "$1" ];
+	then
+		sync_to=$(cat $syncr_conf | grep 'sync_to=' | cut -f2 -d'=')
+		bckp_name=$(ls -a $sync_to|grep -i $1)
+		if [ -n "$bckp_name" ];
+		then
+			dirname=$(echo $bckp_name|cut -c1-)
+			mkdir $dirname
+			cd $dirname
+			cp $sync_to/$bckp_name .
+			tar -xf $bckp_name
+			rm $bckp_name
+		else
+			echo "no match with:" $1
+		fi
+	else
+		print_help
+	fi
+}
+remove_backup(){
+	if [ -n "$1" ];
+	then
+		sync_to=$(cat $syncr_conf | grep 'sync_to=' | cut -f2 -d'=')
+		bckp_name=$(ls -a $sync_to|grep -i $1)
+		if [ -n "$bckp_name" ];
+		then
+			cmd="sed '/"$bckp_name"/d' -i "$syncr_hysto
+			eval $cmd
+			cd $sync_to
+			rm $bckp_name
+			echo "removing: "$bckp_name
+		else
+			echo "no match with:" $1
+		fi
+	else
+		print_help
+	fi
+}
 case "$1" in 
 	new) 
-		files=$(ls $2| grep -v $syncr_conf)
+		files=$(ls $2| grep -v .*)
 		create_syncr "$files" $3
 		;;
 	copy)
@@ -139,6 +209,18 @@ case "$1" in
 		;;
 	remove)
 		remove_file $2
+		;;
+	backup)
+		create_backup $2
+		;;
+	list-backup)
+		list_backup
+		;;
+	rollback)
+		rollback $2
+		;;
+	remove-backup)
+		remove_backup $2
 		;;
 	*)
 		print_help
