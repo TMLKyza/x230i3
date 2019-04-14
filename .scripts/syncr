@@ -5,73 +5,75 @@ print_help () {
 	printf "USAGE:\n"
 	printf "help\n"
 	printf "sync\n"
+	printf "remove [file or list of files]\n"
 	printf "new [list of files to sync] [path of sync]\n"
 	printf "copy [path to sync from]\n"
 	printf "add [file or list of files]\n"
 }
 create_syncr () {
-	files=$1
-	case $2 in
-	  /*) sync_to=$2;;
-	  *) sync_to=$pwd/$2;;
-	esac
-	echo "sync_to="$sync_to>$syncr_conf
-	for i in $files;
-	do
-		echo "sync_file="$i>>$syncr_conf
-	done
-}
-add_files () {
-	files=$1
-	for i in $files;
-	do
-		if [ -z "$(cat $syncr_conf|grep $i)" ];
-		then
-			echo "sync_file="$i>>$syncr_conf
-			echo "adding "$i
-		else
-			echo $i" already in"
-		fi
-	done
-}
-list_changes(){
-	files=$1
-	sync_to=$2
-	output="name local remote\n"
-	for i in $files;
-	do
-		output=$output$i" "$(stat -c "%y" $i)" "$(stat -c "%y" $sync_to"/"$i)"\n"
-	done
-	echo -e $output|column -t
-}
-
-if [ "$1" == "help" ];
-then
-	print_help
-fi
-
-if [ "$1" == "new" ];
-then		
-	#check inputs
-	files=$(ls $2| grep -v $syncr_conf)
-	if [ -n "$3" ];
+	if [ -n "$1" ] || [ -n "$2" ];
 	then
-		sync_to=$3
-		create_syncr "$files" $sync_to
+		files=$1
+		case $2 in
+		  /*) sync_to=$2;;
+		  *) sync_to=$pwd/$2;;
+		esac
+		echo "sync_to="$sync_to>$syncr_conf
+		for i in $files;
+		do
+			echo "sync_file="$i>>$syncr_conf
+		done
 	else
 		print_help
 	fi
-
-fi
-
-if [ "$1" == "copy" ];
-then
-	#check input
-	if [ -z "$2" ];
+}
+add_files () {
+	if [ -z "$1" ];
 	then
 		print_help
 	else
-		copy_from=$2
+		if [ ! -f $syncr_conf ];
+		then
+			echo "Create a new syncr first!"
+		else
+			files=$(ls $1|grep -v $syncr_conf)
+			for i in $files;
+			do
+				if [ -z "$(cat $syncr_conf|grep $i)" ];
+				then
+					echo "sync_file="$i>>$syncr_conf
+					echo "adding "$i
+				else
+					echo $i" already in"
+				fi
+			done
+		fi
+	fi
+}
+list_changes(){
+	if [ -f $syncr_conf ];
+	then
+		sync_to=$(cat $syncr_conf|grep 'sync_to'|cut -f2 -d'=')
+		files=$(cat $syncr_conf|grep 'sync_file'|cut -f2 -d'=')
+		output="name local remote\n"
+		for i in $files;
+		do
+			nanoslocal=$(stat -c '%Y' $i)
+			nanosremote=$(stat -c '%Y' $sync_to/$i)
+			output=$output$i" "$(date -d "1970-01-01 + $nanoslocal secs" +%d-%m-%y@%H:%M:%S)" "$(date -d "1970-01-01 + $nanosremote secs" +%d-%m-%y@%H:%M:%S)"\n"
+		done
+			echo -e $output|column -t
+	else
+		echo "no syncr here!"
+	fi
+}
+copy_from(){
+	#check input
+	if [ -z "$1" ];
+	then
+		print_help
+	else
+		copy_from=$1
 	fi
 	
 	#copy data
@@ -81,57 +83,63 @@ then
 	dir=$(echo $copy_from|rev|cut -f1 -d'/'|rev)
 	cd $dir
 	create_syncr "$(ls|grep -v $syncr_conf)" $copy_from
-fi
-
-if [ "$1" == "add" ];
-then
-	if [ -z "$2" ];
-	then
-		print_help
-	else
-		if [ ! -f $syncr_conf ];
-		then
-			echo "Create a new syncr first!"
-		else
-			files=$(ls $2|grep -v $syncr_conf)
-			add_files "$files"
-		fi
-	fi
-fi
-
-if [ "$1" == "list" ];
-then
+}
+sync_dirs(){
 	if [ -f $syncr_conf ];
 	then
 		sync_to=$(cat $syncr_conf|grep 'sync_to'|cut -f2 -d'=')
 		files=$(cat $syncr_conf|grep 'sync_file'|cut -f2 -d'=')
-	else
-	echo "no syncr here!"
-	fi
-	list_changes "$files" $sync_to
-fi
-
-if [ "$1" == "sync" ];
-then
-	if [ -f $syncr_conf ];
-	then
-		sync_to=$(cat $syncr_conf|grep 'sync_to'|cut -f2 -d'=')
-		files=$(cat $syncr_conf|grep 'sync_file'|cut -f2 -d'=')
+		rmcmd="find "$sync_to" -type f "
 		for i in $files;
 		do
-		if [ -f $sync_to/$i ];
-		then
-			if [ $i -nt $sync_to/$i ];
+			if [ -f $sync_to/$i ];
 			then
-				rsync -ah --progress $i $sync_to
+				if [ $i -nt $sync_to/$i ];
+				then
+					rsync -ah --progress $i $sync_to
+				else
+					rsync -ah --progress $sync_to/$i $i
+				fi
 			else
-				rsync -ah --progress $sync_to/$i $i
+				rsync -ah --progress $i $sync_to/
 			fi
-		else
-			rsync -ah --progress $i $sync_to
-		fi
+			rmcmd=$rmcmd"-not -name '"$i"' "
 		done
+		rmcmd=$rmcmd"-delete"
+		eval $rmcmd
 	else
-	echo "no syncr here!"
+		echo "no syncr here!"
 	fi
-fi
+}
+remove_file(){
+	files=$(ls $1| grep -v $syncr_conf)
+	for i in $files;
+	do
+		cmd="sed '/"$1"/d' -i "$syncr_conf
+		eval $cmd
+
+	done
+}
+case "$1" in 
+	new) 
+		files=$(ls $2| grep -v $syncr_conf)
+		create_syncr "$files" $3
+		;;
+	copy)
+		copy_from $2
+		;;
+	add) 
+		add_files $2
+		;;
+	list)
+		list_changes
+		;;
+	sync)
+		sync_dirs
+		;;
+	remove)
+		remove_file $2
+		;;
+	*)
+		print_help
+esac
