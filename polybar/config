@@ -1,4 +1,9 @@
 [bar/stdbar]
+bckg-color = #242727
+underline-color = #EC7252
+underline-coloralt = #CC544E
+
+;bottom = true
 top = true
 monitor = LVDS-1 
 width = 100%:-28
@@ -9,7 +14,8 @@ radius=2
 override-redirect=true
 wm-restack=i3
 
-background = #cc1f1f1f
+background = ${self.bckg-color}
+;background = #cc1f1f1f
 foreground = #eee
 
 line-size = 1
@@ -20,7 +26,6 @@ module-margin-left = 1
 module-margin-right = 1
 
 
-separator = |
 
 ;font-0 = NotoSans-Regular:size=19;-1
 
@@ -55,7 +60,6 @@ scroll-down = i3wm-wsprev
 overline-size = 10
 overline-color = ${self.background}
 underline-size = 2
-underline-color = ${self.background}
 
 [module/backlight]
 type = internal/backlight
@@ -93,6 +97,9 @@ full-at = 98
 format-charging = ⚡ <label-charging>
 format-discharging = <label-discharging>
 format-full = <label-full>
+format-charging-underline=${root.underline-color}
+format-discharging-underline=${root.underline-color}
+
 
 time-format= %H:%M
 label-charging = %percentage%% 
@@ -195,8 +202,9 @@ label-empty-padding = 1
 [module/cpu]
 type = internal/cpu
 interval = 0.5
-format = <label> <ramp-coreload> 
+format = <label> 
 label = CPU %percentage%%
+label-underline = ${root.underline-color}
 ramp-coreload-0 = ▁
 ramp-coreload-0-font = 2
 ramp-coreload-0-foreground = #0091E9
@@ -225,21 +233,27 @@ ramp-coreload-7-foreground = #ff5555
 [module/date]
 type = internal/date
 date = %%{F#fff}%d-%m-%Y%{F-}
-date-alt = %%{F#fff}%A, %d %B %Y  %%{F#fff}%H:%M%%{F#666}:%%{F#fba922}%S%%{F-}
+;date-alt = %%{F#fff}%A, %d %B %Y  %%{F#fff}%H:%M%%{F#666}:%%{F#fba922}%S%%{F-}
+label = %date%
+label-underline = ${root.underline-color}
 
 [module/time]
 type = internal/date
 date = %%{F#fff}%I:%M%{F-}
+label = %date%
+label-underline = ${root.underline-color}
 
 [module/swap]
 type = internal/memory
 format = <label>
 label = SWAP: %gb_swap_used%/%gb_swap_total%
+label-underline = ${root.underline-color}
 
 [module/memory]
 type = internal/memory
 format = <label> 
 label = RAM: %gb_used%/%gb_total% 
+label-underline = ${root.underline-color}
 
 bar-used-width = 10
 bar-used-foreground-0 = #0091E9
@@ -302,7 +316,7 @@ ramp-signal-4 = 
 animation-packetloss-0 = 
 animation-packetloss-0-foreground = #ffa64c
 animation-packetloss-1 = 
-animation-packetloss-1-foreground = ${bar/top.foreground}
+animation-packetloss-1-foreground = ${root.top.foreground}
 animation-packetloss-framerate = 500
 
 [module/alsa]
@@ -315,6 +329,9 @@ interval = 5
 format-volume=VOL: <label-volume>
 label-volume=%percentage%%
 label-muted=MUTED
+format-volume-underline = ${root.underline-coloralt}
+format-muted-underline = ${root.underline-color}
+
 [module/filesystem]
 type = internal/fs
 interval = 25
@@ -325,6 +342,7 @@ mount-1 = /home
 label-mounted =  %mountpoint%: %percentage_used%%
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = #66
+label-mounted-underline = ${root.underline-color}
 
 
 [module/powermenu]
@@ -364,6 +382,7 @@ menu-2-1-exec = menu_open-0
 type = internal/date
 interval = 2
 date = %%{F#999}%Y-%m-%d%%{F-}  %%{F#fff}%H:%M%%{F-}
+format-date-underline = ${root.underline-color}
 
 
 
@@ -374,9 +393,10 @@ warn-temperature = 65
 
 format = <label>
 ;format-underline = #f50a4d
-;format-warn-underline = ${self.format-underline}
+format-warn-underline = ${root.underline-coloralt}
 
-label = TEMP:%temperature%
+label = TEMP:%temperature-c%
+label-underline = ${root.underline-color}
 
 ramp-0 = 
 ramp-1 = 
@@ -428,7 +448,7 @@ label-mode-background = #e60053
 label-focused =  %index%
 label-focused-foreground = #ffffff
 label-focused-background = #3f3f3f
-label-focused-underline = #fba922
+label-focused-underline = ${root.underline-color}
 label-focused-padding = 2
 
 ; Available tokens:
@@ -464,7 +484,7 @@ label-urgent-padding = 4
 ; Separator in between workspaces
 label-separator = |
 label-separator-padding = 0
-label-separator-foreground = #ffb52a
+label-separator-foreground = ${root.underline-color}
 
 [module/spotify]
 type = custom/script
