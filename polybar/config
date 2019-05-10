@@ -1,14 +1,14 @@
 [bar/stdbar]
-bckg-color = #242727
-underline-color = #EC7252
-underline-coloralt = #CC544E
+bckg-color = #0C1214
+underline-color = #16B9C6
+underline-coloralt = #821B1F
 
 ;bottom = true
 top = true
 monitor = LVDS-1 
 width = 100%:-28
 height = 25
-offset-y=5
+offset-y=6
 offset-x=15
 radius=2
 override-redirect=true
@@ -43,8 +43,9 @@ font-4 = FontAwesome:size=11;0
 
 
 modules-left = i3 
-modules-center = 
-modules-right = cpu temperature memory  filesystem alsa battery date time
+modules-center = time
+modules-right = cpu temperature alsa battery date 
+;modules-right = cpu temperature memory filesystem alsa battery date time
 ;volume wireless-network consumation battery 
 
 ;tray-position = right 
@@ -241,7 +242,7 @@ label-underline = ${root.underline-color}
 type = internal/date
 date = %%{F#fff}%I:%M%{F-}
 label = %date%
-label-underline = ${root.underline-color}
+;label-underline = ${root.underline-color}
 
 [module/swap]
 type = internal/memory
@@ -478,7 +479,7 @@ label-visible-padding = 4
 ; Default: %icon%  %name%
 label-urgent = %index%
 label-urgent-foreground = #000000
-label-urgent-background = #bd2c40
+label-urgent-background = ${root.underline-coloralt}
 label-urgent-padding = 4
 
 ; Separator in between workspaces
