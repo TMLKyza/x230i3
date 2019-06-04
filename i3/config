@@ -31,6 +31,7 @@ bindsym $mod+d exec dmenu_run -b
 bindsym $mod+Shift+d exec ./.scripts/dmount
 bindsym $mod+Control+d exec ./.scripts/dumount
 #laptop keybindings
+bindsym $mod+F7 exec .scripts/screenlayout
 bindsym XF86Launch1 exec .scripts/wconnect
 bindsym XF86AudioMute exec .scripts/audiomanager Master
 bindsym XF86AudioRaiseVolume exec .scripts/audiomanager Master 5
