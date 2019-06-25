@@ -1,4 +1,4 @@
 #!/bin/sh
 dirloc=$HOME/.screenlayout
 selection=$(ls $dirloc|cut -f1 -d'.'|dmenu -b -p 'select layout:')
-$dirloc/./$selection
+$dirloc/./$selection.sh

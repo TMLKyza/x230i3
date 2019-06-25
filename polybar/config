@@ -1,17 +1,18 @@
 [bar/stdbar]
-bckg-color = #000C1214
+;bckg-color = #000C1214
+bckg-color = #b8313230
 underline-color = #16B9C6
 underline-coloralt = #821B1F
 item-bckg-color = #b8313230
 
-;bottom = true
-top = true
+bottom = true
+;top = true
 monitor = LVDS-1 
 width = 100%:-28
 height = 25
 offset-y=6
 offset-x=15
-radius=2
+radius=3
 override-redirect=true
 wm-restack=i3
 
