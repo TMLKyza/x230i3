@@ -3,6 +3,7 @@ set noswapfile
 set autoindent
 set ruler
 set laststatus=2
+colo colors-wal
 let g:powerline_pycmd = 'py3'
 filetype plugin on
 syntax on

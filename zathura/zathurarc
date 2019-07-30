@@ -28,7 +28,7 @@ set completion-fg               "#ebdbb2"
 set notification-bg             "#282828"
 set notification-fg             "#ebdbb2"
 
-set recolor-lightcolor          "#0C1214"
+set recolor-lightcolor          "#011010"
 set recolor-darkcolor           "#FFFFFF"
 set recolor                     "true"
 

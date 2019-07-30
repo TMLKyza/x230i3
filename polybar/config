@@ -1,12 +1,12 @@
 [bar/stdbar]
 ;bckg-color = #000C1214
-bckg-color = #b8313230
-underline-color = #16B9C6
-underline-coloralt = #821B1F
-item-bckg-color = #b8313230
+bckg-color = #b8011010
+underline-color = #397960
+underline-coloralt = #0c4341
+item-bckg-color = #b8011010
 
-bottom = true
-;top = true
+;bottom = true
+top = true
 monitor = LVDS-1 
 width = 100%:-28
 height = 25
@@ -46,9 +46,9 @@ font-4 = FontAwesome:size=11;0
 
 modules-left = i3 
 modules-center = time
-modules-right = cpu temperature alsa battery date 
+modules-right = cpu temperature wired-network wireless-network alsa battery date 
 ;modules-right = cpu temperature memory filesystem alsa battery date time
-;volume wireless-network consumation battery 
+;volume  consumation battery 
 
 ;tray-position = right 
 ;tray-scale = 1.0
@@ -312,26 +312,21 @@ bar-progress-empty-foreground = #44
 
 [module/wireless-network]
 type = internal/network
-interface = wlp5s0
+interface = wlp3s0
 interval = 1.0
-ping-interval = 10
 
-format-connected = <ramp-signal> <label-connected>
-label-connected = %local_ip%    %downspeed%    %upspeed%
-label-disconnected =    not connected
-label-disconnected-foreground = #66
+format-connected = <label-connected>
+label-connected = %local_ip%
+label-connected-underline = ${root.underline-color}
 
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
+[module/wired-network]
+type = internal/network
+interface = enp0s25
+interval = 1.0
 
-animation-packetloss-0 = 
-animation-packetloss-0-foreground = #ffa64c
-animation-packetloss-1 = 
-animation-packetloss-1-foreground = ${root.top.foreground}
-animation-packetloss-framerate = 500
+format-connected = <label-connected>
+label-connected = %local_ip%
+label-connected-underline = ${root.underline-color}
 
 [module/alsa]
 type = internal/alsa

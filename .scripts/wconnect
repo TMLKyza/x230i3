@@ -1,5 +1,5 @@
 #!/bin/sh
-conn=$(sudo netctl list|dmenu -b -p "Select profile:")
+conn=$(netctl list|dmenu -b -p "Select profile:")
 if [ $conn ]
 then
 echo "start:"$conn":end"

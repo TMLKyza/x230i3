@@ -5,7 +5,6 @@ setopt appendhistory autocd
 export KEYTIMEOUT=1
 bindkey -v
 zstyle :compinstall filename '/home/phi/.zshrc'
-
 autoload -Uz compinit promptinit
 compinit
 promptinit

@@ -7,6 +7,17 @@ floating_modifier $mod
 font pango:osx4\ Terminus 9px
 gaps inner 15
 default_border pixel 3
+set_from_resource $fg i3wm.color6
+set_from_resource $bg i3wm.color2
+
+# class                 border  backgr. text indicator child_border
+client.focused          $bg     $bg     $fg  $fg       $bg
+client.focused_inactive $bg     $bg     $fg  $bg       $bg
+client.unfocused        $bg     $bg     $fg  $bg       $bg
+client.urgent           $bg     $bg     $fg  $bg       $bg
+client.placeholder      $bg     $bg     $fg  $bg       $bg
+
+client.background       $bg
 
 # ---workspaces---
 set $ws1 "1"
@@ -110,20 +121,20 @@ exec_always compton --config .config/compton.conf
 exec polybar -r stdbar
 exec light -I
 exec_always echo 200 | sudo tee /sys/devices/platform/i8042/serio1/serio2/speed #sets trackpoint speed
-exec_always echo 110 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
+exec_always echo 130 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
 exec amixer sset Master mute
 exec_always sudo bash -c "echo 2 > /proc/acpi/ibm/kbdlight"
 #exec sudo ./.scripts/kbdbacklight -b 1.5 
 #network features, starting last so it has no delay during boot
-exec sudo netctl start $homewifi #having this should disable dhcpd from slowing down kernel booting
+exec sudo netctl start $homewifi #prevents netctl from hanging during boot
 
 bar {
-  i3bar_command i3bar -t
-  position            bottom
-  tray_output         none  
-  workspace_buttons   no   
-  height              25  
-  colors {
-    background #00000000
-  }
+i3bar_command i3bar -t
+position            top
+tray_output         none  
+workspace_buttons   no   
+height              25  
+colors {
+background #00000000
+}
 }
