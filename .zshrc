@@ -13,12 +13,14 @@ zstyle ':completion:*' menu select
 (cat ~/.cache/wal/sequences &)
 cat ~/.cache/wal/sequences
 source ~/.cache/wal/colors-tty.sh
+xrdb ~/.Xresources
 
 export DOTS_LOC=/home/phi/dots
 export PATH=$PATH:$HOME/.scripts:$HOME/.grapher
-alias ls='lsd --color=auto'
+export TERM=rxvt-256color
+alias ls='lsd --icon never --group-dirs first'
 alias buildconf='vim '$DOTS_LOC'/script.conf'
-alias la='lsd --color=auto -la'
+alias la='lsd --icon never --group-dirs first -lah'
 alias vimrc='vim ~/.vimrc'
 alias rangerrc='vim ~/.config/ranger/rc.conf'
 alias zshrc='vim ~/.zshrc'

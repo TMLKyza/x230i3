@@ -2,7 +2,8 @@
 
 # ---settings---
 set $mod Mod4
-set $homewifi home
+set $stdwifi home
+set $terminal urxvt
 floating_modifier $mod
 font pango:osx4\ Terminus 9px
 gaps inner 15
@@ -32,10 +33,10 @@ set $ws9 "9"
 set $ws10 "10"
 # ---binds---
 # launcher
-bindsym $mod+y exec i3-sensible-terminal -e mpsyt & wal -R -e
+bindsym $mod+y exec $terminal -e mpsyt & wal -R -e
 bindsym $mod+F6 exec scrot -d 3 -e 'mv $f ~/Pictures/'
-bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+e exec i3-sensible-terminal -e ranger & wal -R -e
+bindsym $mod+Return exec $terminal
+bindsym $mod+e exec $terminal -e ranger 
 #bindsym $mod+w exec firefox
 bindsym $mod+w exec qutebrowser
 bindsym $mod+d exec dmenu_run -b
@@ -116,17 +117,17 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # ---autoexec---
 exec wal -R
+exec polybar -r stdbar
+exec ./.scripts/ifwatch enp0s25
 exec_always ./.scripts/automount
 exec_always compton --config .config/compton.conf
-exec polybar -r stdbar
 exec light -I
 exec_always echo 200 | sudo tee /sys/devices/platform/i8042/serio1/serio2/speed #sets trackpoint speed
 exec_always echo 130 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
 exec amixer sset Master mute
 exec_always sudo bash -c "echo 2 > /proc/acpi/ibm/kbdlight"
 #exec sudo ./.scripts/kbdbacklight -b 1.5 
-#network features, starting last so it has no delay during boot
-exec sudo netctl start $homewifi #prevents netctl from hanging during boot
+exec sudo netctl start $stdwifi #prevents netctl from hanging during boot
 
 bar {
 i3bar_command i3bar -t

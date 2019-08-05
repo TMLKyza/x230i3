@@ -1,0 +1,31 @@
+#!/bin/sh
+dev=$1
+sleeptime=5
+
+function watcher {
+	state1=$(ip link show dev $dev)	
+	state2=$state1
+	while [ "$state1" == "$state2" ];
+	do
+		sleep $sleeptime
+		state2=$(ip link show dev $dev)
+	done
+	return 0
+}
+
+
+echo [$(date +'%H:%M:%S')]:Setting $dev up
+sudo ip link set $dev up
+echo [$(date +'%H:%M:%S')]:Listening on $dev
+while watcher;
+do
+	if [[ -n $(ip link show dev $dev |tr '\n' ' ' | grep -v 'NO-CARRIER') ]];
+	then
+		echo [$(date +'%H:%M:%S')]:$dev "connected! running dhcpcd"
+		sudo dhcpcd $dev
+	else
+		echo [$(date +'%H:%M:%S')]:$dev "disconnected! killing dhcpcd"
+		sudo dhcpcd -k $dev
+	fi
+
+done
