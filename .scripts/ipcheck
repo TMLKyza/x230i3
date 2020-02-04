@@ -1,0 +1,16 @@
+#!/bin/sh
+chat_id=195746730
+msg="New IP assigned:"
+wait_time=10m
+ip=0
+while true; do
+	newip=$(curl -s ifconfig.me)
+	if [ "$ip" != "$newip" ]
+	then
+		cmd="curl -s 'https://api.telegram.org/bot253754156:AAH-DL4ByiUFYrZ1z_6SV77jkmuOpcB6pI8/sendMessage?chat_id="$chat_id"&text="$msg" "$newip"'"		
+		eval $cmd
+		ip=$newip
+		echo -e "\n["$(date +%d-%m-%Y' '%H:%M:%S)"] New ip assigned! "$newip
+	fi
+	sleep $wait_time
+done

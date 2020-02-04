@@ -7,7 +7,7 @@ item-bckg-color = #b8011010
 
 ;bottom = true
 top = true
-monitor = LVDS-1 
+monitor = LVDS1 
 width = 100%:-28
 height = 25
 offset-y=6

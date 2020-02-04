@@ -33,11 +33,12 @@ set $ws9 "9"
 set $ws10 "10"
 # ---binds---
 # launcher
-bindsym $mod+y exec $terminal -e mpsyt & wal -R -e
+bindsym $mod+y exec $terminal -e mpsyt
 bindsym $mod+F6 exec scrot -d 3 -e 'mv $f ~/Pictures/'
 bindsym $mod+Return exec $terminal
-bindsym $mod+e exec $terminal -e ranger 
+bindsym $mod+e exec $terminal -e ranger
 #bindsym $mod+w exec firefox
+bindsym $mod+c exec chromium
 bindsym $mod+w exec qutebrowser
 bindsym $mod+d exec dmenu_run -b
 bindsym $mod+Shift+d exec ./.scripts/dmount
@@ -118,22 +119,24 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # ---autoexec---
 exec wal -R
 exec polybar -r stdbar
-exec ./.scripts/ifwatch enp0s25
-exec_always ./.scripts/automount
 exec_always compton --config .config/compton.conf
+exec sudo netctl start $stdwifi #prevents netctl from hanging during boot
+exec ./.scripts/ifwatch enp0s25 #dhcpcd handler for ethernet
+exec_always ./.scripts/automount
 exec light -I
 exec_always echo 200 | sudo tee /sys/devices/platform/i8042/serio1/serio2/speed #sets trackpoint speed
 exec_always echo 130 | sudo tee /sys/devices/platform/i8042/serio1/serio2/sensitivity #sets trackpoint sensitivity
 exec amixer sset Master mute
 exec_always sudo bash -c "echo 2 > /proc/acpi/ibm/kbdlight"
 #exec sudo ./.scripts/kbdbacklight -b 1.5 
-exec sudo netctl start $stdwifi #prevents netctl from hanging during boot
+exec sudo ipsec up homevpn
 
 bar {
 i3bar_command i3bar -t
 position            top
 tray_output         none  
 workspace_buttons   no   
+output primary
 height              25  
 colors {
 background #00000000
